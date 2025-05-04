@@ -1222,32 +1222,128 @@ end)
 
 -- Pestaña Player
 local playerTab = tabFrames["Player"]
+-- Asegurarse de que el Layout esté primero y los elementos después
 local playerGrid = CreateElement("UIGridLayout", {
-    Parent = playerTab, CellPadding = UDim2.fromOffset(10, 10), CellSize = UDim2.new(0.4, 0, 0, 50),
-    HorizontalAlignment = Enum.HorizontalAlignment.Center, VerticalAlignment = Enum.VerticalAlignment.Top, StartCorner = Enum.StartCorner.TopLeft,
+    Parent = playerTab, -- El Layout es hijo del ScrollingFrame (playerTab)
+    Name = "PlayerGridLayout", -- Darle un nombre por claridad
+    CellPadding = UDim2.fromOffset(10, 10),
+    CellSize = UDim2.new(0.4, 0, 0, 55), -- Aumentar un poco el alto para el label
+    HorizontalAlignment = Enum.HorizontalAlignment.Center,
+    VerticalAlignment = Enum.VerticalAlignment.Top,
+    SortOrder = Enum.SortOrder.LayoutOrder, -- El Grid usa LayoutOrder para sus hijos
+    StartCorner = Enum.StartCorner.TopLeft,
 })
 
-local function CreateSlider(parent, label, minVal, maxVal, initialVal, callback)
-     local sliderFrame = CreateElement("Frame", { Name = label.."Frame", Parent = parent, Size = UDim2.fromScale(1,1), BackgroundTransparency=1,})
-     local sliderLabel = CreateElement("TextLabel", { Name = label.."Label", Parent = sliderFrame, Size = UDim2.new(1,0,0,20), BackgroundTransparency=1, Text=label..": "..initialVal, TextColor3=colors.text, Font=Enum.Font.Gotham, TextSize=14, TextXAlignment=Enum.TextXAlignment.Left})
-     local slider = CreateElement("Slider", { Name = label.."Slider", Parent = sliderFrame, Size = UDim2.new(1,0,0,20), Position=UDim2.fromOffset(0,25), MinValue=minVal, MaxValue=maxVal, Value=initialVal, BackgroundColor3=colors.backgroundLight, BarColor3=colors.accent,})
+local function CreateSlider(parent, layoutOrder, label, minVal, maxVal, initialVal, callback)
+    -- El Frame del slider será hijo del 'parent' (playerTab) y será ordenado por 'playerGrid'
+    local sliderFrame = CreateElement("Frame", {
+        Name = label.."Frame",
+        Parent = parent, -- Padre es playerTab
+        Size = UDim2.fromScale(1,1), -- El Grid definirá el tamaño real via CellSize
+        BackgroundTransparency=1,
+        LayoutOrder = layoutOrder -- <-- Establecer LayoutOrder aquí
+    })
+    local sliderLabel = CreateElement("TextLabel", {
+        Name = label.."Label",
+        Parent = sliderFrame,
+        Size = UDim2.new(1,0,0,20),
+        BackgroundTransparency=1,
+        Text=label..": "..initialVal,
+        TextColor3=colors.text,
+        Font=Enum.Font.Gotham, TextSize=14,
+        TextXAlignment=Enum.TextXAlignment.Left,
+        TextYAlignment = Enum.TextYAlignment.Top -- Alinear arriba
+    })
+    local slider = CreateElement("Slider", {
+        Name = label.."Slider",
+        Parent = sliderFrame,
+        Size = UDim2.new(1,0,0,20),
+        Position=UDim2.fromOffset(0, 25), -- Posición relativa dentro del frame
+        MinValue=minVal, MaxValue=maxVal, Value=initialVal,
+        BackgroundColor3=colors.backgroundLight, BarColor3=colors.accent,
+    })
+
+    local currentValue = initialVal -- Guardar valor actual para evitar spam en callback
 
     slider.ValueChanged:Connect(function(value)
         local roundedValue = math.floor(value + 0.5)
         sliderLabel.Text = label..": "..roundedValue
-         if callback then callback(roundedValue) end
-     end)
-     slider.MouseButton1Up:Connect(function() -- Aplicar solo al soltar el slider
-         if callback then callback(math.floor(slider.Value + 0.5)) end
-     end)
-     return sliderFrame
+        currentValue = roundedValue -- Actualizar valor guardado
+    end)
+
+    -- Aplicar el cambio solo cuando se deja de mover el slider
+    slider.MouseButton1Up:Connect(function()
+        if callback then
+            callback(currentValue) -- Usar el último valor redondeado
+        end
+    end)
+    slider.FocusLost:Connect(function(enterPressed) -- También aplicar si se presiona Enter
+        if enterPressed and callback then
+             callback(currentValue)
+        end
+    end)
+
+    return sliderFrame -- Devolver el Frame contenedor
 end
 
-local wsSlider = CreateSlider(playerTab, "WalkSpeed", 16, 200, walkSpeedValue, function(val) walkSpeedValue = val; applyWalkSpeed() end)
-wsSlider.LayoutOrder = 1
-local jpSlider = CreateSlider(playerTab, "JumpPower", 50, 300, jumpPowerValue, function(val) jumpPowerValue = val; applyJumpPower() end)
-jpSlider.LayoutOrder = 2
+-- Crear los sliders y asignarles LayoutOrder
+local wsSliderFrame = CreateSlider(playerTab, 1, "WalkSpeed", 16, 200, walkSpeedValue, function(val) walkSpeedValue = val; applyWalkSpeed() end)
+local jpSliderFrame = CreateSlider(playerTab, 2, "JumpPower", 50, 300, jumpPowerValue, function(val) jumpPowerValue = val; applyJumpPower() end)
 
+-- Aplicar valores iniciales al cargar
+applyWalkSpeed()
+applyJumpPower()
+
+-- Conectar a cambios en el humanoide para actualizar sliders si algo externo los cambia
+local walkSpeedConnection = nil
+local jumpPowerConnection = nil
+
+local function onHumanoidChanged(property)
+    local char = LocalPlayer.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        if property == "WalkSpeed" and wsSliderFrame then
+            local slider = wsSliderFrame:FindFirstChild("WalkSpeedSlider")
+            local label = wsSliderFrame:FindFirstChild("WalkSpeedLabel")
+            if slider and slider.Value ~= hum.WalkSpeed then
+                slider.Value = hum.WalkSpeed
+                if label then label.Text = "WalkSpeed: "..math.floor(hum.WalkSpeed + 0.5) end
+                walkSpeedValue = hum.WalkSpeed -- Actualizar variable global también
+            end
+        elseif property == "JumpPower" and jpSliderFrame then
+            local slider = jpSliderFrame:FindFirstChild("JumpPowerSlider")
+            local label = jpSliderFrame:FindFirstChild("JumpPowerLabel")
+            if slider and slider.Value ~= hum.JumpPower then
+                slider.Value = hum.JumpPower
+                 if label then label.Text = "JumpPower: "..math.floor(hum.JumpPower + 0.5) end
+                jumpPowerValue = hum.JumpPower -- Actualizar variable global también
+            end
+        end
+    end
+end
+
+local function setupHumanoidConnections()
+    local char = LocalPlayer.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        if walkSpeedConnection then walkSpeedConnection:Disconnect(); walkSpeedConnection = nil end
+        if jumpPowerConnection then jumpPowerConnection:Disconnect(); jumpPowerConnection = nil end
+        walkSpeedConnection = hum:GetPropertyChangedSignal("WalkSpeed"):Connect(function() onHumanoidChanged("WalkSpeed") end)
+        jumpPowerConnection = hum:GetPropertyChangedSignal("JumpPower"):Connect(function() onHumanoidChanged("JumpPower") end)
+        onHumanoidChanged("WalkSpeed") -- Actualizar al inicio
+        onHumanoidChanged("JumpPower") -- Actualizar al inicio
+    else
+         -- Si no hay humanoide, desconectar listeners previos para evitar errores si se reconectan luego
+         if walkSpeedConnection then walkSpeedConnection:Disconnect(); walkSpeedConnection = nil end
+         if jumpPowerConnection then jumpPowerConnection:Disconnect(); jumpPowerConnection = nil end
+    end
+end
+LocalPlayer.CharacterAdded:Connect(setupHumanoidConnections)
+LocalPlayer.CharacterRemoving:Connect(function() -- Desconectar cuando el personaje se va
+    if walkSpeedConnection then walkSpeedConnection:Disconnect(); walkSpeedConnection = nil end
+    if jumpPowerConnection then jumpPowerConnection:Disconnect(); jumpPowerConnection = nil end
+end)
+setupHumanoidConnections() -- Llamar una vez por si el personaje ya existe
 -- Aplicar valores iniciales al cargar
 applyWalkSpeed()
 applyJumpPower()
