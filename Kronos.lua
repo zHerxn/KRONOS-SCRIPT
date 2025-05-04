@@ -33,7 +33,7 @@ end
 printBanner()
 
 -- Cargar la biblioteca Orion para la UI (URL actualizada)
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/JustEzpi/ROBLOX-Scripts/main/OrionLib')))()
+local OrionLib =  local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/1201for/V.G-Hub/main/ui-libs/orion')))()
 -- Si la de arriba falla, probá con esta:
 -- local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/1201for/V.G-Hub/main/ui-libs/orion')))()
 
