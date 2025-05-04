@@ -41,13 +41,13 @@ StarterGui:SetCore("SendNotification", {
 -- Lista de servidores desde donde cargar (por si alguno falla)
 local sources = {
     -- GitHub Raw
-    "https://raw.githubusercontent.com/zHerxn/Kronos-Script/main/kronos.lua",
+    "https://raw.githubusercontent.com/zHerxn/Kronos-Script/refs/heads/main/kronos.lua",
     
     -- Pastebin Raw
-    "https://pastebin.com/raw/TuCodigoPastebin",
+    "https://pastebin.com/9GZQPYZG",
     
     -- GitLab Raw
-    "https://gitlab.com/tuusuario/Kronos-Script/-/raw/main/kronos.lua",
+    "https://gitlab.com/zherxn-group/zHerxn-project/-/raw/main/kronos.lua",
     
     -- BitBucket Raw
     "https://bitbucket.org/tuusuario/kronos-script/raw/main/kronos.lua",
