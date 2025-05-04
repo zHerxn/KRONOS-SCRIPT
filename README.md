@@ -47,7 +47,7 @@ Synapse X, KRNL, Fluxus o cualquier executor decente que tengas.
 ## 📷 Capturas de pantalla
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/tuusuario/Kronos-Script/main/screenshot1.jpeg" alt="Kronos en acción" width="600"/>
+  <img src="https://raw.githubusercontent.com/tuusuario/Kronos-Script/main/screenshot1.jpg" alt="Kronos en acción" width="600"/>
 </p>
 
 ## 🚀 Compatibilidad
