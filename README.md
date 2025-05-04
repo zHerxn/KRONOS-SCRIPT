@@ -7,10 +7,10 @@ El script más groso para Ninja Legends de Roblox. Desbloquea todo al toque: chi
 </p>
 
 <p align="center">
-  <a href="https://github.com/zHerxn/Kronos-Script/stargazers"><img src="https://img.shields.io/github/stars/tuusuario/Kronos-Script" alt="Stars Badge"/></a>
-  <a href="https://github.com/zHerxn/Kronos-Script/network/members"><img src="https://img.shields.io/github/forks/tuusuario/Kronos-Script" alt="Forks Badge"/></a>
-  <a href="https://github.com/zHerxn/Kronos-Script/issues"><img src="https://img.shields.io/github/issues/tuusuario/Kronos-Script" alt="Issues Badge"/></a>
-  <a href="https://github.com/zHerxn/Kronos-Script/blob/main/LICENSE"><img src="https://img.shields.io/github/license/tuusuario/Kronos-Script" alt="License Badge"/></a>
+  <a href="https://github.com/zHerxn/Kronos-Script/stargazers"><img src="https://img.shields.io/github/stars/zHerxn/Kronos-Script" alt="Stars Badge"/></a>
+  <a href="https://github.com/zHerxn/Kronos-Script/network/members"><img src="https://img.shields.io/github/forks/zHerxn/Kronos-Script" alt="Forks Badge"/></a>
+  <a href="https://github.com/zHerxn/Kronos-Script/issues"><img src="https://img.shields.io/github/issues/zHerxn/Kronos-Script" alt="Issues Badge"/></a>
+  <a href="https://github.com/zHerxn/Kronos-Script/blob/main/LICENSE"><img src="https://img.shields.io/github/license/zHerxn/Kronos-Script" alt="License Badge"/></a>
 </p>
 
 <p align="center">El script más groso para Ninja Legends, directo desde Argentina para el mundo</p>
@@ -35,7 +35,7 @@ Este script tiene todo lo que necesitás para ser un ninja legendario sin esforz
 
 ### Paso 1: Copiá el código
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/zHerxn/Kronos-Script/main/loader.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/zHerxn/Kronos-Script/main/Kronos.lua"))()
 ```
 
 ### Paso 2: Pegalo en tu executor favorito
@@ -47,7 +47,7 @@ Synapse X, KRNL, Fluxus o cualquier executor decente que tengas.
 ## 📷 Capturas de pantalla
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/zHerxn/Kronos-Script/main/screenshot1.png" alt="Kronos en acción" width="600"/>
+  <img src="https://raw.githubusercontent.com/tuusuario/Kronos-Script/main/screenshot1.jpeg" alt="Kronos en acción" width="600"/>
 </p>
 
 ## 🚀 Compatibilidad
@@ -92,6 +92,9 @@ Este proyecto está bajo la Licencia MIT - mirá el archivo [LICENSE](LICENSE) p
 
 ---
 
+<p align="center">
+  <i>Hecho con amor desde Argentina 🇦🇷</i>
+</p>
 <p align="center">
   <i>Hecho con amor desde Argentina 🇦🇷</i>
 </p>
