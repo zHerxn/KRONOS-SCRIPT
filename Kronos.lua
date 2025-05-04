@@ -1,217 +1,197 @@
 --[[
-$$\   $$\ $$$$$$$\   $$$$$$\  $$\   $$\  $$$$$$\   $$$$$$\  
+$$\      $$\ $$$$$$$\    $$$$$$\  $$\    $$\  $$$$$$\    $$$$$$\  
 $$ | $$  |$$  __$$\ $$  __$$\ $$$\  $$ |$$  __$$\ $$  __$$\ 
 $$ |$$  / $$ |  $$ |$$ /  $$ |$$$$\ $$ |$$ /  \__|$$ /  \__|
 $$$$$  /  $$$$$$$  |$$ |  $$ |$$ $$\$$ |\$$$$$$\  \$$$$$$\  
 $$  $$<   $$  __$$< $$ |  $$ |$$ \$$$$ | \____$$\  \____$$\ 
 $$ |\$$\  $$ |  $$ |$$ |  $$ |$$ |\$$$ |$$\   $$ |$$\   $$ |
 $$ | \$$\ $$ |  $$ | $$$$$$  |$$ | \$$ |\$$$$$$  |\$$$$$$  |
-\__|  \__|\__|  \__| \______/ \__|  \__| \______/  \______/ 
+\__|  \__|\__|  \__| \______/ \__|  \__| \______/  \______/  
                                                             
 ]]--
 
 -- KRONOS SCRIPT: NINJA LEGENDS
--- Creado por el más pijudo de Argentina
--- Version 1.0
+-- Adaptado para Kavo UI Library
+-- Version 1.1 (Kavo Adapt)
 
 local function printBanner()
     print([[
-$$\   $$\ $$$$$$$\   $$$$$$\  $$\   $$\  $$$$$$\   $$$$$$\  
+$$\      $$\ $$$$$$$\    $$$$$$\  $$\    $$\  $$$$$$\    $$$$$$\  
 $$ | $$  |$$  __$$\ $$  __$$\ $$$\  $$ |$$  __$$\ $$  __$$\ 
 $$ |$$  / $$ |  $$ |$$ /  $$ |$$$$\ $$ |$$ /  \__|$$ /  \__|
 $$$$$  /  $$$$$$$  |$$ |  $$ |$$ $$\$$ |\$$$$$$\  \$$$$$$\  
 $$  $$<   $$  __$$< $$ |  $$ |$$ \$$$$ | \____$$\  \____$$\ 
 $$ |\$$\  $$ |  $$ |$$ |  $$ |$$ |\$$$ |$$\   $$ |$$\   $$ |
 $$ | \$$\ $$ |  $$ | $$$$$$  |$$ | \$$ |\$$$$$$  |\$$$$$$  |
-\__|  \__|\__|  \__| \______/ \__|  \__| \______/  \______/ 
+\__|  \__|\__|  \__| \______/ \__|  \__| \______/  \______/  
                                                             
-KRONOS SCRIPT: NINJA LEGENDS - LA ROMPE TODA
+KRONOS SCRIPT: NINJA LEGENDS - LA ROMPE TODA (Kavo Edition)
     ]])
 end
 
 -- Ejecutamos el banner al inicio
 printBanner()
 
--- Cargar la biblioteca Orion para la UI (URL actualizada)
+-- Cargar la biblioteca Kavo UI
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+
+-- Crear la ventana principal con Kavo UI
 local Window = Library.CreateLib("Kronos Hub", "Ocean")
 
--- Variables globales
-local player = game.Players.LocalPlayer
-local hrp = player.Character:WaitForChild("HumanoidRootPart")
-
--- Crear la ventana principal
-local Window = OrionLib:MakeWindow({
-    Name = "KRONOS - Ninja Legends", 
-    HidePremium = false,
-    SaveConfig = true, 
-    ConfigFolder = "KronosConfig",
-    IntroEnabled = true,
-    IntroText = "KRONOS SCRIPT",
-    IntroIcon = "rbxassetid://10618644218",
-    Icon = "rbxassetid://10618644218"
-})
-
--- Tab de Farming
-local FarmingTab = Window:MakeTab({
-    Name = "Farming",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
--- Tab de Teleports
-local TeleportTab = Window:MakeTab({
-    Name = "Teleports",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
--- Tab de Desbloqueos
-local UnlockTab = Window:MakeTab({
-    Name = "Desbloqueos",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
--- Tab de Misceláneos
-local MiscTab = Window:MakeTab({
-    Name = "Misceláneos",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
--- Función para auto-farm
+-- Variables globales de estado
 local autoSwing = false
 local autoSell = false
 
+-- Referencias a servicios (mejor definir una vez)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+
+-- Crear las Tabs con Kavo UI
+local FarmingTab = Window:NewTab("Farming")
+local TeleportTab = Window:NewTab("Teleports")
+local UnlockTab = Window:NewTab("Desbloqueos")
+local MiscTab = Window:NewTab("Misceláneos")
+
+-- Funciones de lógica del juego (sin cambios en su mayoría)
+
 -- Función para obtener todas las espadas
 function UnlockAllSwords()
-    local swords = game:GetService("ReplicatedStorage").Weapon.AllWeapons:GetChildren()
+    local swords = ReplicatedStorage.Weapon.AllWeapons:GetChildren()
     for _, sword in pairs(swords) do
-        game:GetService("ReplicatedStorage").rEvents.BuyItemRemote:FireServer("Weapon", sword.Name)
+        ReplicatedStorage.rEvents.BuyItemRemote:FireServer("Weapon", sword.Name)
+        task.wait(0.1) -- Pequeña espera para evitar sobrecargar el servidor
     end
-    OrionLib:MakeNotification({
-        Name = "¡ALTA FACHA!",
-        Content = "Todas las espadas desbloqueadas, papá",
-        Image = "rbxassetid://4483345998",
-        Time = 5
-    })
+    print("Kronos Hub: Todas las espadas desbloqueadas.")
 end
 
 -- Función para obtener todos los cinturones
 function UnlockAllBelts()
-    local belts = game:GetService("ReplicatedStorage").Belt.AllBelts:GetChildren()
+    local belts = ReplicatedStorage.Belt.AllBelts:GetChildren()
     for _, belt in pairs(belts) do
-        game:GetService("ReplicatedStorage").rEvents.BuyItemRemote:FireServer("Belt", belt.Name)
+        ReplicatedStorage.rEvents.BuyItemRemote:FireServer("Belt", belt.Name)
+        task.wait(0.1)
     end
-    OrionLib:MakeNotification({
-        Name = "¡ALTA FACHA!",
-        Content = "Todos los cinturones desbloqueados, papá",
-        Image = "rbxassetid://4483345998",
-        Time = 5
-    })
+    print("Kronos Hub: Todos los cinturones desbloqueados.")
 end
 
 -- Función para obtener todos los skills
 function UnlockAllSkills()
-    local skills = game:GetService("ReplicatedStorage").Skill.AllSkills:GetChildren()
+    local skills = ReplicatedStorage.Skill.AllSkills:GetChildren()
     for _, skill in pairs(skills) do
-        game:GetService("ReplicatedStorage").rEvents.BuyItemRemote:FireServer("Skill", skill.Name)
+        ReplicatedStorage.rEvents.BuyItemRemote:FireServer("Skill", skill.Name)
+        task.wait(0.1)
     end
-    OrionLib:MakeNotification({
-        Name = "¡ALTA FACHA!",
-        Content = "Todas las habilidades desbloqueadas, papá",
-        Image = "rbxassetid://4483345998",
-        Time = 5
-    })
+    print("Kronos Hub: Todas las habilidades desbloqueadas.")
 end
 
 -- Función para auto-swing (golpear automáticamente)
 function startAutoSwing()
-    spawn(function()
+    local swingEvent = ReplicatedStorage.rEvents:FindFirstChild("swingKatanaEvent")
+    if not swingEvent then
+        print("Kronos Hub Error: No se encontró swingKatanaEvent")
+        autoSwing = false -- Detener si el evento no existe
+        -- Podrías actualizar el estado del toggle aquí si la librería lo permite
+        return
+    end
+    
+    task.spawn(function()
         while autoSwing do
-            game:GetService("ReplicatedStorage").rEvents.swingKatanaEvent:FireServer()
-            wait(0.01)
+            swingEvent:FireServer()
+            task.wait(0.05) -- Un poco más de espera puede ser más estable
         end
     end)
 end
 
 -- Función para auto-sell (vender automáticamente)
 function startAutoSell()
-    spawn(function()
+    local sellCircle = Workspace:FindFirstChild("sellAreaCircles", true) and Workspace.sellAreaCircles:FindFirstChild("sellAreaCircle", true) and Workspace.sellAreaCircles.sellAreaCircle:FindFirstChild("circleInner")
+    
+    if not sellCircle then
+        print("Kronos Hub Error: No se encontró el área de venta (sellAreaCircle.circleInner)")
+        autoSell = false -- Detener si el área no existe
+        -- Podrías actualizar el estado del toggle aquí si la librería lo permite
+        return
+    end
+
+    task.spawn(function()
         while autoSell do
-            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, game:GetService("Workspace").sellAreaCircles.sellAreaCircle.circleInner, 0)
-            wait(0.1)
-            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, game:GetService("Workspace").sellAreaCircles.sellAreaCircle.circleInner, 1)
-            wait(5)
+            local player = Players.LocalPlayer
+            local character = player and player.Character
+            local hrp = character and character:FindFirstChild("HumanoidRootPart")
+            
+            if hrp and sellCircle then
+                pcall(function() -- Usar pcall por si firetouchinterest da error
+                    firetouchinterest(hrp, sellCircle, 0)
+                    task.wait(0.1)
+                    firetouchinterest(hrp, sellCircle, 1)
+                end)
+                task.wait(5) -- Esperar antes de volver a vender
+            else
+                 if not hrp then print("Kronos AutoSell: Esperando HumanoidRootPart...") end
+                 task.wait(1) -- Esperar si no se encuentra el HRP
+            end
         end
     end)
 end
 
--- Función para dar chi infinito
+-- Función para dar chi (puede estar parcheada o no funcionar como se espera)
 function InfiniteChi()
-    for i = 1, 100 do
-        game:GetService("ReplicatedStorage").rEvents.openChestRemote:InvokeServer("Volcano Chest")
+    local chestEvent = ReplicatedStorage.rEvents:FindFirstChild("openChestRemote")
+    if not chestEvent then
+         print("Kronos Hub Error: No se encontró openChestRemote")
+         return
     end
-    OrionLib:MakeNotification({
-        Name = "¡GUITA INFINITA!",
-        Content = "Chi a full, wacho",
-        Image = "rbxassetid://4483345998",
-        Time = 5
-    })
+    task.spawn(function()
+        for i = 1, 50 do -- Reducido a 50 para evitar posibles kicks
+            pcall(function()
+                 chestEvent:InvokeServer("Volcano Chest") -- El cofre puede variar
+            end)
+            task.wait(0.1)
+        end
+        print("Kronos Hub: Intento de obtener Chi completado.")
+    end)
 end
 
--- Añadir botones a la Tab de Farming
-FarmingTab:AddToggle({
-    Name = "Auto Swing (Golpear)",
-    Default = false,
-    Callback = function(Value)
-        autoSwing = Value
-        if autoSwing then
-            startAutoSwing()
-        end
-    end    
-})
+-- --- Creación de los elementos de la UI con Kavo ---
 
-FarmingTab:AddToggle({
-    Name = "Auto Sell (Vender)",
-    Default = false,
-    Callback = function(Value)
-        autoSell = Value
-        if autoSell then
-            startAutoSell()
-        end
-    end    
-})
+-- Añadir toggles a la Tab de Farming
+FarmingTab:NewToggle("Auto Swing (Golpear)", "Activa/desactiva el golpeo automático con la katana", function(Value)
+    autoSwing = Value
+    if autoSwing then
+        startAutoSwing()
+        print("Kronos Hub: Auto Swing Activado")
+    else
+        print("Kronos Hub: Auto Swing Desactivado")
+    end
+end)
+
+FarmingTab:NewToggle("Auto Sell (Vender)", "Activa/desactiva la venta automática al acercarse al área", function(Value)
+    autoSell = Value
+    if autoSell then
+        startAutoSell()
+        print("Kronos Hub: Auto Sell Activado")
+    else
+        print("Kronos Hub: Auto Sell Desactivado")
+    end
+end)
 
 -- Añadir botones a la Tab de Desbloqueos
-UnlockTab:AddButton({
-    Name = "Desbloquear Todas las Espadas",
-    Callback = function()
-        UnlockAllSwords()
-    end    
-})
+UnlockTab:NewButton("Desbloquear Todas las Espadas", "Intenta comprar todas las espadas (necesitas monedas)", function()
+    UnlockAllSwords()
+end)
 
-UnlockTab:AddButton({
-    Name = "Desbloquear Todos los Cinturones",
-    Callback = function()
-        UnlockAllBelts()
-    end    
-})
+UnlockTab:NewButton("Desbloquear Todos los Cinturones", "Intenta comprar todos los cinturones (necesitas monedas)", function()
+    UnlockAllBelts()
+end)
 
-UnlockTab:AddButton({
-    Name = "Desbloquear Todas las Habilidades",
-    Callback = function()
-        UnlockAllSkills()
-    end    
-})
+UnlockTab:NewButton("Desbloquear Todas las Habilidades", "Intenta comprar todas las skills (necesitas monedas)", function()
+    UnlockAllSkills()
+end)
 
-UnlockTab:AddButton({
-    Name = "Chi Infinito",
-    Callback = function()
-        InfiniteChi()
-    end    
-})
+UnlockTab:NewButton("Obtener Chi (Cofre Volcán)", "Intenta abrir cofres del volcán repetidamente para obtener Chi", function()
+    InfiniteChi()
+end)
 
 -- Añadir botones a la Tab de Teleports
 local islands = {
@@ -236,57 +216,49 @@ local islands = {
         ["Dark Elements Island"] = CFrame.new(237, 98013, 335),
         ["Inner Peace Island"] = CFrame.new(237, 104013, 335)
     }
+    -- Puedes añadir más categorías e islas aquí si es necesario
 }
 
 for islandType, islandList in pairs(islands) do
-    local Section = TeleportTab:AddSection({
-        Name = islandType
-    })
+    TeleportTab:NewSection(islandType) -- Crear sección para cada tipo de isla
     
     for islandName, islandCFrame in pairs(islandList) do
-        TeleportTab:AddButton({
-            Name = islandName,
-            Callback = function()
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = islandCFrame
-            end    
-        })
+        TeleportTab:NewButton(islandName, "Teletransportarse a " .. islandName, function()
+            local player = Players.LocalPlayer
+            local character = player and player.Character
+            local hrp = character and character:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.CFrame = islandCFrame
+                print("Kronos Hub: Teletransportado a " .. islandName)
+            else
+                print("Kronos Hub Error: No se pudo encontrar HumanoidRootPart para teletransportar.")
+            end
+        end)
     end
 end
 
--- Añadir botones a la Tab de Misceláneos
-MiscTab:AddSlider({
-    Name = "Velocidad",
-    Min = 16,
-    Max = 500,
-    Default = 16,
-    Color = Color3.fromRGB(255, 0, 0),
-    Increment = 1,
-    ValueName = "Velocidad",
-    Callback = function(Value)
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
-    end    
-})
+-- Añadir sliders a la Tab de Misceláneos
+MiscTab:NewSlider("Velocidad", "Ajusta la velocidad de caminata del personaje", 16, 500, 16, function(Value)
+    local player = Players.LocalPlayer
+    local character = player and player.Character
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.WalkSpeed = Value
+    else
+         print("Kronos Hub Error: No se pudo encontrar Humanoide para ajustar velocidad.")
+    end
+end)
 
-MiscTab:AddSlider({
-    Name = "Salto",
-    Min = 50,
-    Max = 500,
-    Default = 50,
-    Color = Color3.fromRGB(0, 255, 0),
-    Increment = 1,
-    ValueName = "Altura",
-    Callback = function(Value)
-        game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
-    end    
-})
+MiscTab:NewSlider("Salto", "Ajusta la potencia de salto del personaje", 50, 500, 50, function(Value)
+    local player = Players.LocalPlayer
+    local character = player and player.Character
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.JumpPower = Value
+    else
+        print("Kronos Hub Error: No se pudo encontrar Humanoide para ajustar salto.")
+    end
+end)
 
--- Iniciar la librería
-OrionLib:Init()
-
--- Mensaje final
-OrionLib:MakeNotification({
-    Name = "¡SCRIPT ACTIVADO!",
-    Content = "El script Kronos para Ninja Legends está re activado, papá",
-    Image = "rbxassetid://10618644218",
-    Time = 10
-})
+-- Mensaje final en la consola
+print("Kronos Hub: Script cargado y UI inicializada con Kavo.")
