@@ -12,7 +12,7 @@ $$ | \$$\ $$ |  $$ | $$$$$$  |$$ | \$$ |\$$$$$$  |\$$$$$$  |
 
 -- KRONOS SCRIPT: NINJA LEGENDS
 -- Adaptado para Kavo UI Library
--- Version 1.1 (Kavo Adapt)
+-- Version 1.2 (Kavo Adapt - Usando 'Create' en lugar de 'New')
 
 local function printBanner()
     print([[
@@ -25,7 +25,7 @@ $$ |\$$\  $$ |  $$ |$$ |  $$ |$$ |\$$$ |$$\   $$ |$$\   $$ |
 $$ | \$$\ $$ |  $$ | $$$$$$  |$$ | \$$ |\$$$$$$  |\$$$$$$  |
 \__|  \__|\__|  \__| \______/ \__|  \__| \______/  \______/  
                                                             
-KRONOS SCRIPT: NINJA LEGENDS - LA ROMPE TODA (Kavo Edition)
+KRONOS SCRIPT: NINJA LEGENDS - LA ROMPE TODA (Kavo Edition v1.2)
     ]])
 end
 
@@ -47,25 +47,23 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
--- Crear las Tabs con Kavo UI
-local FarmingTab = Window:NewTab("Farming")
-local TeleportTab = Window:NewTab("Teleports")
-local UnlockTab = Window:NewTab("Desbloqueos")
-local MiscTab = Window:NewTab("Misceláneos")
+-- Crear las Tabs con Kavo UI - Intentando con CreateTab
+local FarmingTab = Window:CreateTab("Farming")
+local TeleportTab = Window:CreateTab("Teleports")
+local UnlockTab = Window:CreateTab("Desbloqueos")
+local MiscTab = Window:CreateTab("Misceláneos")
 
--- Funciones de lógica del juego (sin cambios en su mayoría)
+-- Funciones de lógica del juego (sin cambios)
 
--- Función para obtener todas las espadas
 function UnlockAllSwords()
     local swords = ReplicatedStorage.Weapon.AllWeapons:GetChildren()
     for _, sword in pairs(swords) do
         ReplicatedStorage.rEvents.BuyItemRemote:FireServer("Weapon", sword.Name)
-        task.wait(0.1) -- Pequeña espera para evitar sobrecargar el servidor
+        task.wait(0.1) 
     end
     print("Kronos Hub: Todas las espadas desbloqueadas.")
 end
 
--- Función para obtener todos los cinturones
 function UnlockAllBelts()
     local belts = ReplicatedStorage.Belt.AllBelts:GetChildren()
     for _, belt in pairs(belts) do
@@ -75,7 +73,6 @@ function UnlockAllBelts()
     print("Kronos Hub: Todos los cinturones desbloqueados.")
 end
 
--- Función para obtener todos los skills
 function UnlockAllSkills()
     local skills = ReplicatedStorage.Skill.AllSkills:GetChildren()
     for _, skill in pairs(skills) do
@@ -85,32 +82,28 @@ function UnlockAllSkills()
     print("Kronos Hub: Todas las habilidades desbloqueadas.")
 end
 
--- Función para auto-swing (golpear automáticamente)
 function startAutoSwing()
     local swingEvent = ReplicatedStorage.rEvents:FindFirstChild("swingKatanaEvent")
     if not swingEvent then
         print("Kronos Hub Error: No se encontró swingKatanaEvent")
-        autoSwing = false -- Detener si el evento no existe
-        -- Podrías actualizar el estado del toggle aquí si la librería lo permite
+        autoSwing = false 
         return
     end
     
     task.spawn(function()
         while autoSwing do
             swingEvent:FireServer()
-            task.wait(0.05) -- Un poco más de espera puede ser más estable
+            task.wait(0.05) 
         end
     end)
 end
 
--- Función para auto-sell (vender automáticamente)
 function startAutoSell()
     local sellCircle = Workspace:FindFirstChild("sellAreaCircles", true) and Workspace.sellAreaCircles:FindFirstChild("sellAreaCircle", true) and Workspace.sellAreaCircles.sellAreaCircle:FindFirstChild("circleInner")
     
     if not sellCircle then
         print("Kronos Hub Error: No se encontró el área de venta (sellAreaCircle.circleInner)")
-        autoSell = false -- Detener si el área no existe
-        -- Podrías actualizar el estado del toggle aquí si la librería lo permite
+        autoSell = false 
         return
     end
 
@@ -121,21 +114,20 @@ function startAutoSell()
             local hrp = character and character:FindFirstChild("HumanoidRootPart")
             
             if hrp and sellCircle then
-                pcall(function() -- Usar pcall por si firetouchinterest da error
+                pcall(function() 
                     firetouchinterest(hrp, sellCircle, 0)
                     task.wait(0.1)
                     firetouchinterest(hrp, sellCircle, 1)
                 end)
-                task.wait(5) -- Esperar antes de volver a vender
+                task.wait(5) 
             else
                  if not hrp then print("Kronos AutoSell: Esperando HumanoidRootPart...") end
-                 task.wait(1) -- Esperar si no se encuentra el HRP
+                 task.wait(1) 
             end
         end
     end)
 end
 
--- Función para dar chi (puede estar parcheada o no funcionar como se espera)
 function InfiniteChi()
     local chestEvent = ReplicatedStorage.rEvents:FindFirstChild("openChestRemote")
     if not chestEvent then
@@ -143,9 +135,9 @@ function InfiniteChi()
          return
     end
     task.spawn(function()
-        for i = 1, 50 do -- Reducido a 50 para evitar posibles kicks
+        for i = 1, 50 do 
             pcall(function()
-                 chestEvent:InvokeServer("Volcano Chest") -- El cofre puede variar
+                 chestEvent:InvokeServer("Volcano Chest") 
             end)
             task.wait(0.1)
         end
@@ -153,10 +145,10 @@ function InfiniteChi()
     end)
 end
 
--- --- Creación de los elementos de la UI con Kavo ---
+-- --- Creación de los elementos de la UI con Kavo - Intentando con Create... ---
 
 -- Añadir toggles a la Tab de Farming
-FarmingTab:NewToggle("Auto Swing (Golpear)", "Activa/desactiva el golpeo automático con la katana", function(Value)
+FarmingTab:CreateToggle("Auto Swing (Golpear)", "Activa/desactiva el golpeo automático con la katana", function(Value) -- Cambiado a CreateToggle
     autoSwing = Value
     if autoSwing then
         startAutoSwing()
@@ -166,7 +158,7 @@ FarmingTab:NewToggle("Auto Swing (Golpear)", "Activa/desactiva el golpeo automá
     end
 end)
 
-FarmingTab:NewToggle("Auto Sell (Vender)", "Activa/desactiva la venta automática al acercarse al área", function(Value)
+FarmingTab:CreateToggle("Auto Sell (Vender)", "Activa/desactiva la venta automática al acercarse al área", function(Value) -- Cambiado a CreateToggle
     autoSell = Value
     if autoSell then
         startAutoSell()
@@ -177,19 +169,19 @@ FarmingTab:NewToggle("Auto Sell (Vender)", "Activa/desactiva la venta automátic
 end)
 
 -- Añadir botones a la Tab de Desbloqueos
-UnlockTab:NewButton("Desbloquear Todas las Espadas", "Intenta comprar todas las espadas (necesitas monedas)", function()
+UnlockTab:CreateButton("Desbloquear Todas las Espadas", "Intenta comprar todas las espadas (necesitas monedas)", function() -- Cambiado a CreateButton
     UnlockAllSwords()
 end)
 
-UnlockTab:NewButton("Desbloquear Todos los Cinturones", "Intenta comprar todos los cinturones (necesitas monedas)", function()
+UnlockTab:CreateButton("Desbloquear Todos los Cinturones", "Intenta comprar todos los cinturones (necesitas monedas)", function() -- Cambiado a CreateButton
     UnlockAllBelts()
 end)
 
-UnlockTab:NewButton("Desbloquear Todas las Habilidades", "Intenta comprar todas las skills (necesitas monedas)", function()
+UnlockTab:CreateButton("Desbloquear Todas las Habilidades", "Intenta comprar todas las skills (necesitas monedas)", function() -- Cambiado a CreateButton
     UnlockAllSkills()
 end)
 
-UnlockTab:NewButton("Obtener Chi (Cofre Volcán)", "Intenta abrir cofres del volcán repetidamente para obtener Chi", function()
+UnlockTab:CreateButton("Obtener Chi (Cofre Volcán)", "Intenta abrir cofres del volcán repetidamente para obtener Chi", function() -- Cambiado a CreateButton
     InfiniteChi()
 end)
 
@@ -216,14 +208,13 @@ local islands = {
         ["Dark Elements Island"] = CFrame.new(237, 98013, 335),
         ["Inner Peace Island"] = CFrame.new(237, 104013, 335)
     }
-    -- Puedes añadir más categorías e islas aquí si es necesario
 }
 
 for islandType, islandList in pairs(islands) do
-    TeleportTab:NewSection(islandType) -- Crear sección para cada tipo de isla
+    TeleportTab:CreateSection(islandType) -- Cambiado a CreateSection
     
     for islandName, islandCFrame in pairs(islandList) do
-        TeleportTab:NewButton(islandName, "Teletransportarse a " .. islandName, function()
+        TeleportTab:CreateButton(islandName, "Teletransportarse a " .. islandName, function() -- Cambiado a CreateButton
             local player = Players.LocalPlayer
             local character = player and player.Character
             local hrp = character and character:FindFirstChild("HumanoidRootPart")
@@ -238,7 +229,7 @@ for islandType, islandList in pairs(islands) do
 end
 
 -- Añadir sliders a la Tab de Misceláneos
-MiscTab:NewSlider("Velocidad", "Ajusta la velocidad de caminata del personaje", 16, 500, 16, function(Value)
+MiscTab:CreateSlider("Velocidad", "Ajusta la velocidad de caminata del personaje", 16, 500, 16, function(Value) -- Cambiado a CreateSlider
     local player = Players.LocalPlayer
     local character = player and player.Character
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
@@ -249,7 +240,7 @@ MiscTab:NewSlider("Velocidad", "Ajusta la velocidad de caminata del personaje", 
     end
 end)
 
-MiscTab:NewSlider("Salto", "Ajusta la potencia de salto del personaje", 50, 500, 50, function(Value)
+MiscTab:CreateSlider("Salto", "Ajusta la potencia de salto del personaje", 50, 500, 50, function(Value) -- Cambiado a CreateSlider
     local player = Players.LocalPlayer
     local character = player and player.Character
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
@@ -261,4 +252,4 @@ MiscTab:NewSlider("Salto", "Ajusta la potencia de salto del personaje", 50, 500,
 end)
 
 -- Mensaje final en la consola
-print("Kronos Hub: Script cargado y UI inicializada con Kavo.")
+print("Kronos Hub: Script cargado y UI inicializada con Kavo (v1.2 - Usando Create...).")
