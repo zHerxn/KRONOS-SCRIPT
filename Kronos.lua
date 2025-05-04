@@ -32,8 +32,10 @@ end
 -- Ejecutamos el banner al inicio
 printBanner()
 
--- Cargar la biblioteca Orion para la UI
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+-- Cargar la biblioteca Orion para la UI (URL actualizada)
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/JustEzpi/ROBLOX-Scripts/main/OrionLib')))()
+-- Si la de arriba falla, probá con esta:
+-- local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/1201for/V.G-Hub/main/ui-libs/orion')))()
 
 -- Variables globales
 local player = game.Players.LocalPlayer
