@@ -12,7 +12,7 @@ $$ | \$$\ $$ |  $$ | $$$$$$  |$$ | \$$ |\$$$$$$  |\$$$$$$  |
 
 -- KRONOS SCRIPT: NINJA LEGENDS
 -- Adaptado para Kavo UI Library
--- Version 1.2 (Kavo Adapt - Usando 'Create' en lugar de 'New')
+-- Version 1.3 (Kavo Adapt - Corrigiendo llamadas según fuente)
 
 local function printBanner()
     print([[
@@ -25,7 +25,7 @@ $$ |\$$\  $$ |  $$ |$$ |  $$ |$$ |\$$$ |$$\   $$ |$$\   $$ |
 $$ | \$$\ $$ |  $$ | $$$$$$  |$$ | \$$ |\$$$$$$  |\$$$$$$  |
 \__|  \__|\__|  \__| \______/ \__|  \__| \______/  \______/  
                                                             
-KRONOS SCRIPT: NINJA LEGENDS - LA ROMPE TODA (Kavo Edition v1.2)
+KRONOS SCRIPT: NINJA LEGENDS - LA ROMPE TODA (Kavo Edition v1.3)
     ]])
 end
 
@@ -36,25 +36,26 @@ printBanner()
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 
 -- Crear la ventana principal con Kavo UI
-local Window = Library.CreateLib("Kronos Hub", "Ocean")
+-- CreateLib devuelve el objeto principal de la librería (llamado 'Kavo' en el fuente)
+local Window = Library.CreateLib("Kronos Hub", "Ocean") 
 
 -- Variables globales de estado
 local autoSwing = false
 local autoSell = false
 
--- Referencias a servicios (mejor definir una vez)
+-- Referencias a servicios
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
--- Crear las Tabs con Kavo UI - Intentando con CreateTab
-local FarmingTab = Window:CreateTab("Farming")
-local TeleportTab = Window:CreateTab("Teleports")
-local UnlockTab = Window:CreateTab("Desbloqueos")
-local MiscTab = Window:CreateTab("Misceláneos")
+-- Crear las Tabs usando NewTab en el objeto Window (devuelto por CreateLib)
+-- NewTab devuelve un objeto 'Tab' para añadir elementos
+local FarmingTab = Window:NewTab("Farming") 
+local TeleportTab = Window:NewTab("Teleports")
+local UnlockTab = Window:NewTab("Desbloqueos")
+local MiscTab = Window:NewTab("Misceláneos")
 
--- Funciones de lógica del juego (sin cambios)
-
+-- === Funciones de lógica del juego (sin cambios) ===
 function UnlockAllSwords()
     local swords = ReplicatedStorage.Weapon.AllWeapons:GetChildren()
     for _, sword in pairs(swords) do
@@ -144,11 +145,13 @@ function InfiniteChi()
         print("Kronos Hub: Intento de obtener Chi completado.")
     end)
 end
+-- ====================================================
 
--- --- Creación de los elementos de la UI con Kavo - Intentando con Create... ---
+-- --- Creación de los elementos de la UI con Kavo ---
+-- Llamando a NewToggle, NewButton, etc., en el objeto Tab devuelto por NewTab
 
 -- Añadir toggles a la Tab de Farming
-FarmingTab:CreateToggle("Auto Swing (Golpear)", "Activa/desactiva el golpeo automático con la katana", function(Value) -- Cambiado a CreateToggle
+FarmingTab:NewToggle("Auto Swing (Golpear)", "Activa/desactiva el golpeo automático con la katana", function(Value) -- Usando NewToggle en FarmingTab
     autoSwing = Value
     if autoSwing then
         startAutoSwing()
@@ -158,7 +161,7 @@ FarmingTab:CreateToggle("Auto Swing (Golpear)", "Activa/desactiva el golpeo auto
     end
 end)
 
-FarmingTab:CreateToggle("Auto Sell (Vender)", "Activa/desactiva la venta automática al acercarse al área", function(Value) -- Cambiado a CreateToggle
+FarmingTab:NewToggle("Auto Sell (Vender)", "Activa/desactiva la venta automática al acercarse al área", function(Value) -- Usando NewToggle en FarmingTab
     autoSell = Value
     if autoSell then
         startAutoSell()
@@ -169,19 +172,19 @@ FarmingTab:CreateToggle("Auto Sell (Vender)", "Activa/desactiva la venta automá
 end)
 
 -- Añadir botones a la Tab de Desbloqueos
-UnlockTab:CreateButton("Desbloquear Todas las Espadas", "Intenta comprar todas las espadas (necesitas monedas)", function() -- Cambiado a CreateButton
+UnlockTab:NewButton("Desbloquear Todas las Espadas", "Intenta comprar todas las espadas (necesitas monedas)", function() -- Usando NewButton en UnlockTab
     UnlockAllSwords()
 end)
 
-UnlockTab:CreateButton("Desbloquear Todos los Cinturones", "Intenta comprar todos los cinturones (necesitas monedas)", function() -- Cambiado a CreateButton
+UnlockTab:NewButton("Desbloquear Todos los Cinturones", "Intenta comprar todos los cinturones (necesitas monedas)", function() -- Usando NewButton en UnlockTab
     UnlockAllBelts()
 end)
 
-UnlockTab:CreateButton("Desbloquear Todas las Habilidades", "Intenta comprar todas las skills (necesitas monedas)", function() -- Cambiado a CreateButton
+UnlockTab:NewButton("Desbloquear Todas las Habilidades", "Intenta comprar todas las skills (necesitas monedas)", function() -- Usando NewButton en UnlockTab
     UnlockAllSkills()
 end)
 
-UnlockTab:CreateButton("Obtener Chi (Cofre Volcán)", "Intenta abrir cofres del volcán repetidamente para obtener Chi", function() -- Cambiado a CreateButton
+UnlockTab:NewButton("Obtener Chi (Cofre Volcán)", "Intenta abrir cofres del volcán repetidamente para obtener Chi", function() -- Usando NewButton en UnlockTab
     InfiniteChi()
 end)
 
@@ -210,11 +213,13 @@ local islands = {
     }
 }
 
+-- Asumiendo que existe NewSection en el objeto Tab
+-- Si esto falla, podríamos necesitar usar NewLabel para los títulos de sección
 for islandType, islandList in pairs(islands) do
-    TeleportTab:CreateSection(islandType) -- Cambiado a CreateSection
+    TeleportTab:NewSection(islandType) -- Usando NewSection en TeleportTab (ASUNCIÓN)
     
     for islandName, islandCFrame in pairs(islandList) do
-        TeleportTab:CreateButton(islandName, "Teletransportarse a " .. islandName, function() -- Cambiado a CreateButton
+        TeleportTab:NewButton(islandName, "Teletransportarse a " .. islandName, function() -- Usando NewButton en TeleportTab
             local player = Players.LocalPlayer
             local character = player and player.Character
             local hrp = character and character:FindFirstChild("HumanoidRootPart")
@@ -229,7 +234,7 @@ for islandType, islandList in pairs(islands) do
 end
 
 -- Añadir sliders a la Tab de Misceláneos
-MiscTab:CreateSlider("Velocidad", "Ajusta la velocidad de caminata del personaje", 16, 500, 16, function(Value) -- Cambiado a CreateSlider
+MiscTab:NewSlider("Velocidad", "Ajusta la velocidad de caminata del personaje", 16, 500, 16, function(Value) -- Usando NewSlider en MiscTab
     local player = Players.LocalPlayer
     local character = player and player.Character
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
@@ -240,7 +245,7 @@ MiscTab:CreateSlider("Velocidad", "Ajusta la velocidad de caminata del personaje
     end
 end)
 
-MiscTab:CreateSlider("Salto", "Ajusta la potencia de salto del personaje", 50, 500, 50, function(Value) -- Cambiado a CreateSlider
+MiscTab:NewSlider("Salto", "Ajusta la potencia de salto del personaje", 50, 500, 50, function(Value) -- Usando NewSlider en MiscTab
     local player = Players.LocalPlayer
     local character = player and player.Character
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
@@ -252,4 +257,4 @@ MiscTab:CreateSlider("Salto", "Ajusta la potencia de salto del personaje", 50, 5
 end)
 
 -- Mensaje final en la consola
-print("Kronos Hub: Script cargado y UI inicializada con Kavo (v1.2 - Usando Create...).")
+print("Kronos Hub: Script cargado y UI inicializada con Kavo (v1.3).")
