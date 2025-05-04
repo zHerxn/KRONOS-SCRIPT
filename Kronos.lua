@@ -1449,48 +1449,6 @@ local function updateCanvasSize(tabFrame)
          -- pcall(function() tabFrame.CanvasSize = UDim2.new(0,0,0, 300) end) -- Tamaño fallback muy simple
     end
 end
-
--- Conectar la actualización a los cambios en los layouts y ejecutar una vez al inicio
-for tabName, frame in pairs(tabFrames) do
-    -- Verificar que 'frame' sea un ScrollingFrame válido antes de continuar
-    if not frame or not frame:IsA("ScrollingFrame") then
-         warn("Kronos Hub: Elemento inválido encontrado en tabFrames para la clave:", tabName)
-         continue -- Saltar esta iteración si frame no es válido
-    end
-
-    local layout = frame:FindFirstChildOfClass("UIListLayout")
-                 or frame:FindFirstChildOfClass("UIGridLayout")
-                 or frame:FindFirstChildOfClass("UITableLayout")
-
-    if layout then
-        -- Conectar al evento Changed del layout encontrado
-        local connection = layout.Changed:Connect(function()
-            -- Llamar a updateCanvasSize para el frame específico de esta iteración ('frame' es capturado por la clausura)
-            updateCanvasSize(frame)
-        end)
-        -- Podrías guardar 'connection' en un atributo del frame si necesitas desconectarlo después
-        -- frame:SetAttribute("LayoutUpdateConnection", connection)
-
-        -- Llamar una vez inicialmente después de un pequeño delay para dar tiempo a que la UI se renderice
-        task.delay(0.2, function()
-            if frame and frame.Parent then -- Re-verificar que el frame aún exista
-                updateCanvasSize(frame)
-            end
-        end)
-    else
-        warn("Kronos Hub: No se encontró layout en", frame.Name, "para conectar el evento Changed o para la actualización inicial de CanvasSize.")
-        -- Aún así, intentar una actualización inicial por si acaso, aunque sin layout no hará mucho
-         task.delay(0.2, function()
-            if frame and frame.Parent then
-                updateCanvasSize(frame)
-            end
-        end)
-    end
-end
-
--- === Limpieza al quitar el script ===
--- (El resto del código sigue aquí...)
--- === Limpieza al quitar el script ===
 KronosUI.Destroying:Connect(function()
     print("Kronos Hub: Cleaning up...")
     -- Detener todos los bucles
