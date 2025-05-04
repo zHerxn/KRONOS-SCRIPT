@@ -33,9 +33,8 @@ end
 printBanner()
 
 -- Cargar la biblioteca Orion para la UI (URL actualizada)
-local OrionLib =  local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/1201for/V.G-Hub/main/ui-libs/orion')))()
--- Si la de arriba falla, probá con esta:
--- local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/1201for/V.G-Hub/main/ui-libs/orion')))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Kronos Hub", "Ocean")
 
 -- Variables globales
 local player = game.Players.LocalPlayer
