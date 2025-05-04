@@ -1094,12 +1094,6 @@ for i, tabName in ipairs(tabData) do
     end)
     tabButtons[tabName] = tabButton
 
-    -- Activar la primera pestaña por defecto
-    if i == 1 then
-        tabButton:MouseButton1Click()
-    end
-end
-
 -- === Poblar Pestañas ===
 
 -- Pestaña Main
