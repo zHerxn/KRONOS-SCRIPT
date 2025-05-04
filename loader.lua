@@ -59,15 +59,15 @@ local sources = {
 -- Función para verificar la compatibilidad del ejecutor
 local function checkExecutor()
     local executors = {
-        ["Synapse X"] = true,
-        ["ScriptWare"] = true,
-        ["KRNL"] = true,
+        ["Solara"] = true,
+        ["Swift"] = true,
+        ["Visual"] = true,
         ["Fluxus"] = true,
-        ["Hydrogen"] = true,
-        ["Electron"] = true,
-        ["JJSploit"] = "warning", -- JJSploit es medio pelo, viste
-        ["Oxygen U"] = true,
-        ["Arceus X"] = "mobile" -- Para los del celu
+        ["AWP"] = true,
+        ["Seliware"] = true,
+        ["Xeno"] = "warning", -- Xeno es medio pelo, viste
+        ["Potassium"] = true,
+        ["Delta"] = "mobile" -- Para los del celu
     }
     
     local executor = identifyexecutor and identifyexecutor() or getexecutorname and getexecutorname() or "Unknown"
