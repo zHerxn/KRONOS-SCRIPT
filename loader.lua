@@ -40,8 +40,8 @@ StarterGui:SetCore("SendNotification", {
 
 -- Lista de servidores desde donde cargar (por si alguno falla)
 local sources = {
-    -- GitHub Raw
-    "https://raw.githubusercontent.com/zHerxn/Kronos-Script/refs/heads/main/kronos.lua",
+-- GitHub Raw
+    "https://raw.githubusercontent.com/zHerxn/Kronos-Script/refs/heads/main/Kronos.lua",
     
     -- Pastebin Raw
     "https://pastebin.com/9GZQPYZG",
@@ -59,15 +59,15 @@ local sources = {
 -- Función para verificar la compatibilidad del ejecutor
 local function checkExecutor()
     local executors = {
-        ["Solara"] = true,
-        ["Swift"] = true,
-        ["Visual"] = true,
+        ["Synapse X"] = true,
+        ["ScriptWare"] = true,
+        ["KRNL"] = true,
         ["Fluxus"] = true,
-        ["AWP"] = true,
-        ["Seliware"] = true,
-        ["Xeno"] = "warning", -- Xeno es medio pelo, viste
-        ["Potassium"] = true,
-        ["Delta"] = "mobile" -- Para los del celu
+        ["Hydrogen"] = true,
+        ["Electron"] = true,
+        ["JJSploit"] = "warning", -- JJSploit es medio pelo, viste
+        ["Oxygen U"] = true,
+        ["Arceus X"] = "mobile" -- Para los del celu
     }
     
     local executor = identifyexecutor and identifyexecutor() or getexecutorname and getexecutorname() or "Unknown"
